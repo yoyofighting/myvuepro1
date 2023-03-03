@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import bus from '@/components/eventBus.js'
+// import bus from '@/components/eventBus.js'
 
 export default {
   props: {
@@ -25,14 +25,18 @@ export default {
   },
   methods: {
     add() {
-      const obj = {id: this.id, value: this.num + 1}
-      bus.$emit('share', obj)
+      // 这是孙传子 子传父的复杂做法
+      /* const obj = {id: this.id, value: this.num + 1}
+      bus.$emit('share', obj) */
+      // 这是使用slot插槽一步到位，使用了自定义事件的方法
+      this.$emit('num-change', this.num + 1)
     },
     sub() {
       if(this.num - 1 === 0) return
-      const sub1 = this.num - 1
+      /* const sub1 = this.num - 1
       const obj = {id: this.id, value: sub1}
-      bus.$emit('share', obj)
+      bus.$emit('share', obj) */
+      this.$emit('num-change', this.num - 1)
     } 
   }
 }

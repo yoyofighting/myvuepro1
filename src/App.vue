@@ -13,7 +13,10 @@
            :state="item.goods_state"
            :count="item.goods_count" 
            @state-change="getNewState"
-           ></Goods>
+           >
+           <!-- counter组件被渲染到goods中的slot上 -->
+          <Counter :num="item.goods_count" @num-change="getNewNum(item, $event)"></Counter>
+    </Goods>
 
     <!-- footer区域 -->
     <Footer :isfull="fullState" :amount="amt" :all="total" @full-change="getFullState"></Footer>
@@ -29,8 +32,8 @@ import axios from 'axios'
 import Header from '@/components/Header/Header.vue'
 import Goods from '@/components/Goods/Goods.vue'
 import Footer from '@/components/Footer/Footer.vue'
-import bus from '@/components/eventBus.js'
-
+// import bus from '@/components/eventBus.js'
+import Counter from '@/components/Counter/Counter.vue'
 export default {
   data() {
     return {
@@ -42,8 +45,8 @@ export default {
   created() {
     // this指向app这个vue实例
     this.initCartList()
-    // 
-    bus.$on('share', val => {
+    // 这是使用这是孙传子 子传父的复杂做法
+    /* bus.$on('share', val => {
       this.list.some(item => {
         if(item.id === val.id){
           item.goods_count = val.value 
@@ -51,13 +54,14 @@ export default {
         }
         
       })
-    })
+    }) */
   },
 
   components: {
     Header,
     Goods,
     Footer,
+    Counter,
   },
   methods: {
     // 封装请求列表数据的函数 并在created()中调用
@@ -83,6 +87,10 @@ export default {
     // 接受footer子组件传递过来的全选键状态
     getFullState(val) {
       this.list.forEach(item => (item.goods_state = val))
+    },
+    // 这是使用slot插槽一步到位，使用了自定义事件的方法
+    getNewNum(item, val) {
+      item.goods_count = val
     }
   },
   computed: {
